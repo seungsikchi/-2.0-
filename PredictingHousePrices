@@ -84,4 +84,3 @@ def house_model(y_new):
 
 prediction = house_model([12,0])
 print("방 12개이면 집값은", prediction,"입니다.")
-ㅁㅁㅁㅁㅁ

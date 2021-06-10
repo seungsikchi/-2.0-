@@ -1,0 +1,43 @@
+import numpy as np
+import math
+import matplotlib.pyplot as plt
+
+x = [-8,-7,-6,-5,-4,-3,-2,-1,1,2,3,4,5,6,7,8]
+
+def sigmoid(x):
+  return 1/(1+math.exp(-x))
+
+def tanh(x):
+  high = math.exp(x) - math.exp(-x)
+  low = math.exp(x) + math.exp(-x)
+
+  return high/low
+
+def ReLu(x):
+  if x >= 0:
+    return x
+  else:
+    return 0
+
+sig_y = []
+ta_y = []
+Re_y = []
+
+for i in x:
+  sig_y.append(sigmoid(i))
+  ta_y.append(tanh(i))
+  Re_y.append(ReLu(i))
+
+
+plt.plot(x,sig_y)
+plt.title('sigmoid function')
+plt.show()
+
+
+plt.plot(x,ta_y)
+plt.title('tanh function')
+plt.show()
+
+plt.plot(x,Re_y)
+plt.title('ReLu function')
+plt.show()

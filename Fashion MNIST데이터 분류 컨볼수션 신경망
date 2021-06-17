@@ -28,15 +28,20 @@ plt.show()
 #훈련 데이터의 첫번째 ~ 16번째 까지의 라벨을 프린트
 print(train_Y[:16])
 
-#Fashion MNIST모델에 풀링레이어, 드롭아웃 추가
+#Fashion MNIST데이터에 VGGNet 스타일로 모델 정의
 model = tf.keras.Sequential([
-  tf.keras.layers.Conv2D(input_shape = (28,28,1),kernel_size = (3,3), filters = 32),
-  tf.keras.layers.MaxPool2D(strides = (2,2)),
-  tf.keras.layers.Conv2D(kernel_size = (3,3), filters = 64),
-  tf.keras.layers.MaxPool2D(strides = (2,2)),
-  tf.keras.layers.Conv2D(kernel_size = (3,3), filters = 128),
+  tf.keras.layers.Conv2D(input_shape = (28,28,1),kernel_size = (3,3), filters = 32, padding = 'same', activation = 'relu'),
+  tf.keras.layers.Conv2D(kernel_size = (3,3), filters = 64, padding = 'same', activation = 'relu'),
+  tf.keras.layers.MaxPool2D(pool_size = (2,2)),
+  tf.keras.layers.Dropout(rate = 0.5),
+  tf.keras.layers.Conv2D(kernel_size = (3,3), filters = 128, padding = 'same', activation = 'relu'),
+  tf.keras.layers.Conv2D(kernel_size = (3,3), filters = 256, padding = 'valid', activation = 'relu'),
+  tf.keras.layers.MaxPool2D(pool_size = (2,2)),
+  tf.keras.layers.Dropout(rate = 0.5),
   tf.keras.layers.Flatten(),
-  tf.keras.layers.Dense(units = 128, activation= 'relu'),
+  tf.keras.layers.Dense(units = 512, activation= 'relu'),
+  tf.keras.layers.Dropout(rate = 0.5),
+  tf.keras.layers.Dense(units = 256, activation= 'relu'),
   tf.keras.layers.Dropout(rate = 0.5),
   tf.keras.layers.Dense(units = 10, activation= 'softmax'),
 ])

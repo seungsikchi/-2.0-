@@ -28,22 +28,22 @@ plt.show()
 #훈련 데이터의 첫번째 ~ 16번째 까지의 라벨을 프린트
 print(train_Y[:16])
 
-#Fashion MNIST 분류를 위한 컨볼루션 신경망 모델 정의
+#Fashion MNIST모델에 풀링레이어, 드롭아웃 추가
 model = tf.keras.Sequential([
-  tf.keras.layers.Conv2D(input_shape = (28,28,1),kernel_size = (3,3), filters = 16),
-  tf.keras.layers.Conv2D(kernel_size = (3,3), filters = 32),
+  tf.keras.layers.Conv2D(input_shape = (28,28,1),kernel_size = (3,3), filters = 32),
+  tf.keras.layers.MaxPool2D(strides = (2,2)),
   tf.keras.layers.Conv2D(kernel_size = (3,3), filters = 64),
+  tf.keras.layers.MaxPool2D(strides = (2,2)),
+  tf.keras.layers.Conv2D(kernel_size = (3,3), filters = 128),
   tf.keras.layers.Flatten(),
   tf.keras.layers.Dense(units = 128, activation= 'relu'),
+  tf.keras.layers.Dropout(rate = 0.5),
   tf.keras.layers.Dense(units = 10, activation= 'softmax'),
 ])
 
 model.compile(optimizer = tf.keras.optimizers.Adam(), loss = 'sparse_categorical_crossentropy', metrics = ['accuracy'])
 
 model.summary()
-
-#Fashion MNIST 분류를 위한 컨볼루션 신경망모델 학습
-history = model.fit(train_X, train_Y, epochs = 25, validation_split = 0.25)
 
 #학습 후 Loss값이랑 Accuracy값 확인
 import matplotlib.pyplot as plt
@@ -62,6 +62,5 @@ plt.xlabel('Epochs')
 plt.ylim(0.7, 1)
 plt.legend()
 
-plt.show()
 
 model.evaluate(test_X, test_Y, verbose = 0)

@@ -1,0 +1,110 @@
+import tensorflow as tf
+import matplotlib.pyplot as plt
+from PIL import Image
+import numpy as np
+import math
+from IPython.display import display
+import cv2
+from urllib.request import urlopen
+
+#======================== 필터 설정하기
+#sobel filter for drivative X
+kernelX = [[-1, 0, 1],
+          [-1, 0, 1],
+          [-1, 0, 1]]
+
+kernelX = np.array(kernelX)
+
+#Sobel filter for drivative Y
+kernelY = [[-1, -1, -1],
+           [0, 0, 0],
+           [1, 1, 1]]
+
+kernelY = np.array(kernelY)
+
+#Gaussian filter for drivative X
+kerlnelGauss = [[1, 3, 1],
+                [3, 5, 3],
+                [1, 3, 1]]
+
+kerlnelGauss = kerlnelGauss / np.sum(kerlnelGauss)
+kerlnelGauss = np.array(kerlnelGauss)
+
+#============================functions 정규화와 Convolution 적용하는 함수 만들기
+
+def normalize(x):
+  return (x-np.min(x))/(np.max(x)-np.min(x))
+def getDimension(x):
+  return x.shape[0], x.shape[1]
+def convolution(kernel, img):
+  kX, kY = getDimension(kernel) #kernel의 X와 y값을 알아넴
+  nX, nY = getDimension(img)   #image의 X와  y값을 알아넴
+  print(kX, kY, nX, nY)
+
+  templmg = np.zeros((nX, nY), dtype = 'float64') #feature map
+
+  for i in range(1, nX-1): #이미지의 x길이만큼 반복
+    for j in range(1, nY-1): #이미지의 y길이만큼 반복
+      for k in range(0, kX): #이미지를 커널의 x길이에 맞게 반복
+        for l in range(0, kY): #이미지를 커널의 y길이에 맞게 반복
+          templmg[i,j] += img[i+k-1, j+l-1]*kernel[k, l] #feature map에 필터를 거친 수를 입력
+
+  return templmg
+
+#============our Coed starts 데이터를 가져오고 적용하기
+
+fashion_mnist = tf.keras.datasets.fashion_mnist
+(train_X,train_Y), (test_X,test_Y) = fashion_mnist.load_data()
+
+nplmg = train_X[5]
+#print(nplmg.dtype)
+#print(nplmg, np.max(nplmg), np.min(nplmg))
+
+slmg = convolution(kerlnelGauss, nplmg)
+slmg = normalize(slmg)
+print("smoothing done")
+
+dX = convolution(kernelX, slmg)
+print("dx done")
+
+dY = convolution(kernelY, slmg)
+print("dy done")
+Mag = np.sqrt(dX * dX + dY * dY) #편미분이 되어있는 값을 넣어서 경계선을 더 잘보이게 함 #가우시안 필터에 사용을 하기위해서 필요
+#print(dX.shape, np.average(dX), np.max(dX), m.min(dX))tmdt
+
+
+
+dX = normalize(dX)
+dY = normalize(dY)
+Mag = normalize(Mag)
+
+#==============================our code End 들고온 데이터 정규화 및 결과 확인하기
+
+slmg = slmg * 255.0
+smlg = slmg.astype(np.uint16)
+
+dX = dX * 255.0
+dX = dX.astype(np.uint16)
+
+dY = dY * 255.0
+dY = dY.astype(np.uint16)
+
+Mag = Mag * 255.0
+Mag = Mag.astype(np.uint16)
+
+plt.figure(figsize= (10, 10))
+
+plt.subplot(3,2,1)
+plt.imshow(train_X[5], cmap = "gray")
+
+plt.subplot(3,2,2)
+plt.imshow(slmg, cmap = "gray")
+
+plt.subplot(3,2,3)
+plt.imshow(dX, cmap = "gray")
+
+plt.subplot(3,2,4)
+plt.imshow(dY, cmap = "gray")
+
+plt.subplot(3,2,5)
+plt.imshow(Mag, cmap = "gray")

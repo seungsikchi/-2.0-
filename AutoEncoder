@@ -33,6 +33,7 @@ model = tf.keras.Sequential([
 
 model.compile(optimizer =tf.optimizers.Adam(), loss= 'mse')
 model.summary()
+
 model.fit(train_X, train_X, epochs=10, batch_size= 256)
 
 #테스트 데이터로 Dense 오토인코더의 이미지 
@@ -91,3 +92,26 @@ for c in range(4):
 plt.show()
 
 model.evaluate(test_X, test_X)
+
+#convolution한 데이터가 들어있는 latent_vector를 설정
+latent_vector_model = tf.keras.Model(inputs = model.input, outputs=model.layers[3].output)
+latent_vector = latent_vector_model.predict(train_X)
+
+%time
+from sklearn.cluster import KMeans
+
+#k Means Clustering을 사용해 데이터를 분류
+kmeans = KMeans(n_clusters = 10, n_init = 10, random_state = 42)
+kmeans.fit(latent_vector)
+
+#K Means Clustering을 사용해 분류한 이미지 확인
+plt.figure(figsize = (12, 12))
+
+for i in range(10):
+    images = train_X[kmeans.labels_ == i]
+    for c in range(10):
+        plt.subplot(10, 10, i*10+c+1)
+        plt.imshow(images[c].reshape(28,28), cmap = 'gray')
+        plt.axis('off')
+        
+plt.show()

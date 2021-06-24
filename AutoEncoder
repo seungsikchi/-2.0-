@@ -115,3 +115,35 @@ for i in range(10):
         plt.axis('off')
         
 plt.show()
+
+#TSEN으로 latent_vector 확인하기
+%%time
+from sklearn.manifold import TSNE
+
+tsne = TSNE(n_components = 2, learning_rate = 100, perplexity = 15) TSEN으로 결과 실행
+tsne_vector = tsne.fit_transform(latent_vector[:5000])#latent_vector를 앞에서 부터 5000개를 짜름
+
+#matplotlib라이브러리를 활용해서 TSEN결과를 확인
+cmap = plt.get_cmap('rainbow', 10)
+fig = plt.scatter(tsne_vector[:,0], tsne_vector[:,1], marker = '.', c=train_Y[:5000], cmap = cmap)
+cb = plt.colorbar(fig, ticks=range(10))
+n_clusters = 10
+tick_locs = (np.arange(n_clusters)+ 0.5)*(n_clusters-1)/n_clusters
+cb.set_ticks(tick_locs)
+cb.set_ticklabels(range(10))
+
+#최근접 이웃숫자를 바꿔가면서 분류가 어떻게 되는지 확인
+%%time
+
+perplexities = [5, 10, 15, 25, 50, 100]
+plt.figure(figsize = (8,12))
+
+for c in range(6):
+    tsne = TSNE(n_components = 2, learning_rate = 100, perplexity = perplexities[c])
+    tsne_vector = tsne.fit_transform(latent_vector[:5000])
+    
+    plt.subplot(3, 2, c+1)
+    plt.scatter(tsne_vector[:,0], tsne_vector[:,1], marker='.', c=train_Y[:5000], cmap = 'rainbow')
+    plt.title('perplexity:{0}'.format(perplexities[c]))
+
+plt.show()

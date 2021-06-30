@@ -41,12 +41,12 @@ def get_hr_and_lr(image_path):
 #train, valid Dataset정의
 train_dataset = tf.data.Dataset.list_files(train_path)#dataset정의
 train_dataset = train_dataset.map(get_hr_and_lr)#새로운 dataset정의하고 hr과 lr을 얻음
-train_dataset = train_dataset.repeat()#데이터 반복사용을 위해 repeat()함수 호출
+train_dataset = train_dataset.repeat()#데이터 계속 학습시키기을 위해 repeat()함수 호출
 train_dataset = train_dataset.batch(16)#데이터의 batch_size를 16으로 설정
 
 valid_dataset = tf.data.Dataset.list_files(valid_path)#dataset정의
 valid_dataset = valid_dataset.map(get_hr_and_lr)#새로운 dataset정의하고 hr과 lr을 얻음
-valid_dataset = valid_dataset.repeat()#데이터 반복사용을 위해 repeat()함수 호출
+valid_dataset = valid_dataset.repeat()#데이터 계속 학습시키기을 위해 repeat()함수 호출
 valid_dataset = valid_dataset.batch(1)#데이터의 batch_size를 1으로 설정
 
 #REDNet 네트워크 정의(Funtion API)
@@ -184,12 +184,12 @@ def get_hr_and_lr_flip_s4(image_path):
 #REDNet 네트워크 학습
 train_dataset = tf.data.Dataset.list_files(train_path)#데이터를 불러옴
 train_dataset = train_dataset.map(get_hr_and_lr_flip_s4)#위에 했던거처럼 이미지를 반전시켜 데이터양을 늘림
-train_dataset = train_dataset.repeat()#데이터를 다시 사용하기 위해 repeat()함수 사용
+train_dataset = train_dataset.repeat()#데이터를 계속 학습시키기위해 repeat()함수 사용
 train_dataset = train_dataset.batch(16)#batch_size를 16으로 설정
 
 valid_dataset = tf.data.Dataset.list_files(valid_path)#데이터를 불러옴
 valid_dataset = valid_dataset.map(get_hr_and_lr_flip_s4))#위에 했던거처럼 이미지를 반전시켜 데이터양을 늘림
-valid_dataset = valid_dataset.repeat()#데이터를 다시 사용하기 위해 repeat()함수 사용
+valid_dataset = valid_dataset.repeat()#데이터를 계속 학습시키기위해 repeat()함수 사용
 valid_dataset = valid_dataset.batch(1)#batch_size를 1으로 설정
 
 model = REDNet(15)

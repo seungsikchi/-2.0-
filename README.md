@@ -70,3 +70,7 @@ RNN의 정의와 작동원리에 대해서 학습하고 책에 있는 내용을 
 16일차
 실습파일 이름 LSTM
 LSTM의 정의와 작동원리에 대해서 학습을하고 Simple RNN과 LSTM의 문제점과 이것을 보완하기 위해서 어떻게 했는지 등에 대해서 알아봤습니다.
+
+17일차
+실습파일 이름 LSTM
+책에 있는 LSTM파일을 마저 코딩하고 Gradient Vanishing과 Gradient Exploding의 문제가 왜 생기는지에 대해서 알아봤습니다.
